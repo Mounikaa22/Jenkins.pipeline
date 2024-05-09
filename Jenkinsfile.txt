@@ -1,0 +1,77 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Build') {
+            steps {
+                echo "Builds the code using Maven tool as the build automation tool."
+                
+            }
+        }
+        stage('Unit and Integration Tests') {
+            steps {
+                echo "Runs unit and integration tests using JUnit and Selenium."
+                
+            }
+            post {
+                success {
+                    emailext subject: 'Success report in test stage',
+                    body: "The test stage was success. Below is the attached log file",
+                    to: 'mouna200022@gmail.com',
+                    attachLog: true
+                }
+                failure {
+                    emailext subject: 'Failed report in test stage',
+                    body: "The test stage has failed. Below is the attached log file",
+                    to: 'mouna200022@gmail.com',
+                    attachLog: true
+                }
+            }
+}
+
+        stage('Code Analysis') {
+            steps {
+                echo "Analyzes the source code for potential bugs to ensure quality and maintainability using SonarQube."
+            
+            }
+        }
+        stage('Security Scan') {
+            steps {
+                echo "Scans the code, dependencies, and configurations using OWASP Dependency Check."
+                
+            }
+            post {
+                success {
+                    emailext subject: "Success report in Security scan",
+                    body: "The security scan stage executed successfully. Below is the attached log file",
+                    to: 'mouna200022@gmail.com',
+                    attachLog: true
+                }
+                failure {
+                    emailext subject: "Failure report in Security scan",
+                    body: "The security scan has failed. Below is the attached log file",
+                    to: 'mouna200022@gmail.com',
+                    attachLog: true
+                }
+            }
+        }
+        stage('Deploy to Staging') {
+            steps {
+                echo "Deploys the application to a staging environment using Jenkins SSH Plugin."
+                
+            }
+        }
+        stage('Integration Tests on Staging') {
+            steps {
+                echo "Runs integration tests in the staging environment to validate the application against the production-like setup."
+                
+            }
+        }
+        stage('Deploy to Production') {
+            steps {
+                echo "Deploys the application to the production environment where it becomes accessible to end-users."
+                
+            }
+        }
+    }
+}
